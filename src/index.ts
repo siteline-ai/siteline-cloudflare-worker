@@ -10,40 +10,45 @@ export interface Env {
 	GPTRENDS_API_URL: string;
 }
 
-const SKIP_EXTENSIONS = [
-	'.css', '.js', '.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp',
-	'.ico', '.woff', '.woff2', '.ttf', '.mp4', '.webm'
-];
+const SKIP_PATTERN = /\.(css|js|jpe?g|png|gif|svg|webp|ico|woff2?|ttf|mp4|webm)$/i;
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		const start = Date.now();
 		const response = await fetch(request);
 
-		ctx.waitUntil(track(request, env));
+		if (shouldTrack(request)) {
+			ctx.waitUntil(track(request, response.status, Date.now() - start, env));
+		}
 
 		return response;
 	}
 } satisfies ExportedHandler<Env>;
 
+function shouldTrack(req: Request): boolean {
+	const { method, url } = req;
+	return (method === 'GET' || method === 'POST') && !SKIP_PATTERN.test(url);
+}
 
-async function track(req: Request, env: Env): Promise<void> {
+async function track(req: Request, status: number, time: number, env: Env): Promise<void> {
 	try {
-		const url = new URL(req.url);
-
-		if (SKIP_EXTENSIONS.some(ext => url.pathname.toLowerCase().endsWith(ext))) {
-			return;
-		}
-
-		const params = new URLSearchParams({
-			url: req.url,
-			userAgent: req.headers.get('user-agent') || '',
-			ref: req.headers.get('referer') || '',
-			ip: req.headers.get('cf-connecting-ip') || '',
-			websiteKey: env.GPTRENDS_WEBSITE_KEY
-		});
-
-		await fetch(`${env.GPTRENDS_API_URL}?${params}`)
-			.catch(() => {});
-
+		await fetch(env.GPTRENDS_API_URL, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				url: req.url,
+				method: req.method,
+				userAgent: req.headers.get('user-agent') || '',
+				ref: req.headers.get('referer') || '',
+				ip: req.headers.get('cf-connecting-ip') || '',
+				status,
+				time,
+				websiteKey: env.GPTRENDS_WEBSITE_KEY,
+				integration_type: 'cloudflare-worker',
+				sdk: 'gptrends-cloudflare-worker',
+				sdk_version: '1.0.0',
+			}),
+			signal: AbortSignal.timeout(5000)
+		}).catch(() => {});
 	} catch {}
 }
