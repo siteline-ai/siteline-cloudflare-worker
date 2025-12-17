@@ -7,6 +7,6 @@
 		"enabled": true
 	},
 	"vars": {
-		"GPTRENDS_API_URL": "https://api.gptrends.io/track"
+		"GPTRENDS_API_URL": "https://api.gptrends.io/v1/intake/pageview"
 	}
 }
