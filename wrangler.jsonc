@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "@siteline/cloudflare-worker",
+	"name": "siteline-cloudflare-worker",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-12-05",
 	"observability": {
