@@ -165,3 +165,8 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+# IDE directories
+
+.idea/
+*.iml
