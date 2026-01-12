@@ -1,6 +1,6 @@
 {
 	"name": "siteline-cloudflare-worker",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
@@ -10,7 +10,7 @@
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
-		"@siteline/core": "^1.0.1"
+		"@siteline/core": "^1.0.0"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
