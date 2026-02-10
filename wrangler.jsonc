@@ -6,6 +6,9 @@
 	"observability": {
 		"enabled": true
 	},
+	"dev": {
+		"host": "siteline.ai"
+	},
 	"vars": {
 		"SITELINE_API_URL": "https://api.siteline.ai/v1/intake/pageview"
 	}

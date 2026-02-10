@@ -12,14 +12,13 @@ export const SitelineWorker = {
 		const response = await fetch(request);
 
 		ctx.waitUntil(
-			track(request, response.status, performance.now() - startedAt, env)
-				.catch((error) => {
-					if (error instanceof TrackingError) {
-						console.error(`[Siteline] ${error.message}:`, error.cause);
-					} else {
-						console.error('[Siteline] Unexpected error:', error);
-					}
-				})
+			track(request, response.status, performance.now() - startedAt, env).catch((error) => {
+				if (error instanceof TrackingError) {
+					console.error(`[Siteline] ${error.message}:`, error.cause);
+				} else {
+					console.error('[Siteline] Unexpected error:', error);
+				}
+			})
 		);
 
 		return response;
