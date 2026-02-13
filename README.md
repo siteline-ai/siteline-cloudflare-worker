@@ -2,14 +2,12 @@
 
 Automatically track AI bot visits (ChatGPT, Claude, Perplexity, etc.) on your website with zero performance impact.
 
-## Quick Setup (5 minutes)
-
-### Prerequisites
+## Prerequisites
 - Cloudflare account
 - Node.js installed
 - Your Siteline website key
 
-### Installation Steps
+## Installation
 
 1. **Clone and install dependencies**
    ```bash
@@ -54,12 +52,6 @@ Static assets (images, CSS, JS, fonts) are automatically excluded.
 
 ## Configuration
 
-### Default API URL
-The worker uses `https://api.siteline.ai/track` by default. To change it:
-```bash
-npx wrangler secret put SITELINE_API_URL
-```
-
 ### Update the worker
 After making changes to the code:
 ```bash
@@ -91,8 +83,12 @@ The worker runs as middleware on your domain:
 npx wrangler secret put SITELINE_WEBSITE_KEY
 ```
 
+## Documentation
+
+- [Full Documentation](https://docs.gptrends.io/integrations/cloudflare)
+- [GitHub Repository](https://github.com/siteline-ai/siteline-cloudflare-worker)
+
 ## Support
 
-For issues or questions about Siteline, visit [siteline.ai](https://siteline.ai)
-
-For Cloudflare Workers issues, see the [official documentation](https://developers.cloudflare.com/workers/)
+- [GitHub Issues](https://github.com/siteline-ai/siteline-cloudflare-worker/issues)
+- Email: team@siteline.ai
