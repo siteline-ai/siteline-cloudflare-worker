@@ -57,7 +57,7 @@ describe('track', () => {
 			expect(Siteline).toHaveBeenCalledWith({
 				websiteKey: mockEnv.SITELINE_WEBSITE_KEY,
 				sdk: '@siteline/cloudflare-worker',
-				sdkVersion: '1.0.7',
+				sdkVersion: '1.0.8',
 				integrationType: 'cloudflare-worker',
 			});
 		});
