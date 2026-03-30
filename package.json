@@ -6,11 +6,11 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest --silent",
+		"test": "vitest run --silent",
 		"cf-typegen": "wrangler types"
 	},
 	"dependencies": {
-		"@siteline/core": "^1.0.8"
+		"@siteline/core": "^1.0.9"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.12.12",
