@@ -27,6 +27,7 @@ export async function track(
 			userAgent: req.headers.get('user-agent') || '',
 			ref: req.headers.get('referer') || '',
 			ip: req.headers.get('cf-connecting-ip') || '',
+			acceptHeader: req.headers.get('accept') || null,
 		});
 	} catch (error) {
 		throw new TrackingError('Failed to track request', error);

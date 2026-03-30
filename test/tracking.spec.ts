@@ -158,6 +158,65 @@ describe('track', () => {
 		});
 	});
 
+	describe('Accept header tracking', () => {
+		it('passes Accept header when present', async () => {
+			const mockTrack = vi.fn().mockResolvedValue(undefined);
+			vi.mocked(Siteline).mockImplementation(
+				() => ({ track: mockTrack } as any)
+			);
+
+			const req = new Request('https://example.com/test', {
+				method: 'GET',
+				headers: {
+					'user-agent': 'Mozilla/5.0',
+					'cf-connecting-ip': '192.168.1.1',
+					'accept': 'text/markdown',
+				},
+			});
+
+			await track(req, 200, 100, mockEnv);
+
+			expect(mockTrack).toHaveBeenCalledWith(
+				expect.objectContaining({ acceptHeader: 'text/markdown' })
+			);
+		});
+
+		it('passes null when Accept header is absent', async () => {
+			const mockTrack = vi.fn().mockResolvedValue(undefined);
+			vi.mocked(Siteline).mockImplementation(
+				() => ({ track: mockTrack } as any)
+			);
+
+			await track(mockRequest, 200, 100, mockEnv);
+
+			expect(mockTrack).toHaveBeenCalledWith(
+				expect.objectContaining({ acceptHeader: null })
+			);
+		});
+
+		it('passes comma-joined Accept values as a single string', async () => {
+			const mockTrack = vi.fn().mockResolvedValue(undefined);
+			vi.mocked(Siteline).mockImplementation(
+				() => ({ track: mockTrack } as any)
+			);
+
+			const req = new Request('https://example.com/test', {
+				method: 'GET',
+				headers: {
+					'user-agent': 'Mozilla/5.0',
+					'cf-connecting-ip': '192.168.1.1',
+					'accept': 'text/html, text/markdown;q=0.9',
+				},
+			});
+
+			await track(req, 200, 100, mockEnv);
+
+			expect(mockTrack).toHaveBeenCalledWith(
+				expect.objectContaining({ acceptHeader: 'text/html, text/markdown;q=0.9' })
+			);
+		});
+	});
+
 	describe('different HTTP methods', () => {
 		it('tracks POST requests', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
