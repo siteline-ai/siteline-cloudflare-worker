@@ -10,6 +10,7 @@ vi.mock('@siteline/core', () => ({
 
 describe('track', () => {
 	const mockEnv: Env = {
+		SITELINE_API_URL: 'https://api.siteline.ai/v1/intake/pageview',
 		SITELINE_WEBSITE_KEY: 'siteline_secret_' + '0'.repeat(32),
 	};
 
@@ -28,7 +29,10 @@ describe('track', () => {
 
 	describe('configuration validation', () => {
 		it('throws ConfigurationError when SITELINE_WEBSITE_KEY is missing', async () => {
-			const envWithoutKey: Env = { SITELINE_WEBSITE_KEY: '' };
+			const envWithoutKey: Env = {
+				SITELINE_API_URL: 'https://api.siteline.ai/v1/intake/pageview',
+				SITELINE_WEBSITE_KEY: '',
+			};
 			await expect(track(mockRequest, 200, 100, envWithoutKey)).rejects.toThrow(
 				ConfigurationError
 			);
@@ -71,6 +75,7 @@ describe('track', () => {
 			await track(mockRequest, 200, 123.45, mockEnv);
 
 			expect(mockTrack).toHaveBeenCalledWith({
+				acceptHeader: null,
 				url: 'https://example.com/test',
 				method: 'GET',
 				status: 200,
@@ -106,6 +111,7 @@ describe('track', () => {
 			await track(requestWithoutHeaders, 404, 50, mockEnv);
 
 			expect(mockTrack).toHaveBeenCalledWith({
+				acceptHeader: null,
 				url: 'https://example.com/test',
 				method: 'POST',
 				status: 404,
