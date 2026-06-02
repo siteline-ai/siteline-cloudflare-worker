@@ -8,6 +8,12 @@ vi.mock('@siteline/core', () => ({
 	Siteline: vi.fn(),
 }));
 
+function mockSitelineClient(mockTrack: ReturnType<typeof vi.fn>) {
+	vi.mocked(Siteline).mockImplementation(function () {
+		return { track: mockTrack } as any;
+	} as any);
+}
+
 describe('track', () => {
 	const mockEnv: Env = {
 		SITELINE_API_URL: 'https://api.siteline.ai/v1/intake/pageview',
@@ -52,25 +58,21 @@ describe('track', () => {
 	describe('successful tracking', () => {
 		it('initializes Siteline with correct configuration', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			await track(mockRequest, 200, 123.45, mockEnv);
 
 			expect(Siteline).toHaveBeenCalledWith({
 				websiteKey: mockEnv.SITELINE_WEBSITE_KEY,
 				sdk: '@siteline/cloudflare-worker',
-				sdkVersion: '1.0.8',
+				sdkVersion: '1.0.9',
 				integrationType: 'cloudflare-worker',
 			});
 		});
 
 		it('calls track with correct parameters', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			await track(mockRequest, 200, 123.45, mockEnv);
 
@@ -88,9 +90,7 @@ describe('track', () => {
 
 		it('rounds duration to nearest integer', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			await track(mockRequest, 200, 99.9, mockEnv);
 			expect(mockTrack).toHaveBeenCalledWith(
@@ -100,9 +100,7 @@ describe('track', () => {
 
 		it('handles missing headers gracefully', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			const requestWithoutHeaders = new Request('https://example.com/test', {
 				method: 'POST',
@@ -125,9 +123,9 @@ describe('track', () => {
 
 	describe('error handling', () => {
 		it('throws TrackingError when Siteline constructor fails', async () => {
-			vi.mocked(Siteline).mockImplementation(() => {
+			vi.mocked(Siteline).mockImplementation(function () {
 				throw new Error('SDK initialization failed');
-			});
+			} as any);
 
 			await expect(track(mockRequest, 200, 100, mockEnv)).rejects.toThrow(
 				TrackingError
@@ -139,9 +137,7 @@ describe('track', () => {
 
 		it('throws TrackingError when track method fails', async () => {
 			const mockTrack = vi.fn().mockRejectedValue(new Error('Network error'));
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			await expect(track(mockRequest, 200, 100, mockEnv)).rejects.toThrow(
 				TrackingError
@@ -151,9 +147,7 @@ describe('track', () => {
 		it('preserves original error as cause', async () => {
 			const originalError = new Error('Network timeout');
 			const mockTrack = vi.fn().mockRejectedValue(originalError);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			try {
 				await track(mockRequest, 200, 100, mockEnv);
@@ -167,9 +161,7 @@ describe('track', () => {
 	describe('Accept header tracking', () => {
 		it('passes Accept header when present', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			const req = new Request('https://example.com/test', {
 				method: 'GET',
@@ -189,9 +181,7 @@ describe('track', () => {
 
 		it('passes null when Accept header is absent', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			await track(mockRequest, 200, 100, mockEnv);
 
@@ -202,9 +192,7 @@ describe('track', () => {
 
 		it('passes comma-joined Accept values as a single string', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			const req = new Request('https://example.com/test', {
 				method: 'GET',
@@ -226,9 +214,7 @@ describe('track', () => {
 	describe('different HTTP methods', () => {
 		it('tracks POST requests', async () => {
 			const mockTrack = vi.fn().mockResolvedValue(undefined);
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 
 			const postRequest = new Request('https://example.com/api', {
 				method: 'POST',
@@ -246,9 +232,7 @@ describe('track', () => {
 		const mockTrack = vi.fn().mockResolvedValue(undefined);
 
 		beforeEach(() => {
-			vi.mocked(Siteline).mockImplementation(
-				() => ({ track: mockTrack } as any)
-			);
+			mockSitelineClient(mockTrack);
 		});
 
 		it('tracks 2xx responses', async () => {

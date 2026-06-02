@@ -1,5 +1,6 @@
 import { createExecutionContext, waitOnExecutionContext } from 'cloudflare:test';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Env } from '../src/types';
 
 vi.mock('../src/tracking', () => ({
 	track: vi.fn().mockResolvedValue(undefined),
@@ -9,6 +10,10 @@ import worker from '../src/index';
 import { track } from '../src/tracking';
 
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
+const testEnv: Env = {
+	SITELINE_API_URL: 'https://api.siteline.ai/v1/intake/pageview',
+	SITELINE_WEBSITE_KEY: 'siteline_secret_' + '0'.repeat(32),
+};
 
 describe('Siteline worker request filtering', () => {
 	beforeEach(() => {
@@ -21,7 +26,7 @@ describe('Siteline worker request filtering', () => {
 
 		const response = await worker.fetch(
 			request,
-			{ SITELINE_WEBSITE_KEY: 'siteline_secret_' + '0'.repeat(32) },
+			testEnv,
 			ctx
 		);
 		await waitOnExecutionContext(ctx);
@@ -36,7 +41,7 @@ describe('Siteline worker request filtering', () => {
 
 		const response = await worker.fetch(
 			request,
-			{ SITELINE_WEBSITE_KEY: 'siteline_secret_' + '0'.repeat(32) },
+			testEnv,
 			ctx
 		);
 		await waitOnExecutionContext(ctx);

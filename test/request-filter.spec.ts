@@ -6,7 +6,7 @@ const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 describe('shouldTrackRequest', () => {
 	it('skips requests Cloudflare marks as static resources', () => {
 		const request = new IncomingRequest('https://example.com/about', {
-			cf: { staticResource: true } as IncomingRequestCfProperties,
+			cf: { staticResource: true } as unknown as IncomingRequestCfProperties,
 		});
 
 		expect(shouldTrackRequest(request)).toBe(false);
