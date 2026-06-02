@@ -1,4 +1,5 @@
 import { track } from './tracking';
+import { shouldTrackRequest } from './request-filter';
 import { TrackingError } from './errors';
 import { Env } from './types';
 
@@ -10,6 +11,10 @@ export const SitelineWorker = {
 	): Promise<Response> {
 		const startedAt = performance.now();
 		const response = await fetch(request);
+
+		if (!shouldTrackRequest(request)) {
+			return response;
+		}
 
 		ctx.waitUntil(
 			track(request, response.status, performance.now() - startedAt, env).catch((error) => {
