@@ -73,6 +73,26 @@ After making changes to the code:
 npm run deploy
 ```
 
+### MCP-only worker (separate deployment)
+
+This repo also includes a dedicated MCP ingestion worker. Route scoping is handled at the Cloudflare level, so assign this worker only to your MCP endpoint routes.
+
+- Deploy:
+  ```bash
+  npm run deploy:mcp
+  ```
+- Run locally:
+  ```bash
+  npm run dev:mcp
+  ```
+
+It uses `wrangler.mcp.jsonc`.
+
+Additional MCP vars:
+
+- `SITELINE_MCP_CAPTURE_ARG_KEYS` - capture `params.arguments` key names only (`true`/`false`, default `false`)
+- `SITELINE_MCP_TRANSPORT` - fallback transport label when response headers are not SSE (default `streamable-http`)
+
 ### Audit Cloudflare state
 This read-only helper lists the Worker name, secrets, deployments, rollback command shape, dry-run delete command, and manual route cleanup checklist:
 ```bash

@@ -4,15 +4,16 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
+    "deploy:mcp": "wrangler deploy --config wrangler.mcp.jsonc",
     "dev": "wrangler dev",
+    "dev:mcp": "wrangler dev --config wrangler.mcp.jsonc",
     "start": "wrangler dev",
     "test": "vitest run --silent",
     "audit:cloudflare": "bash scripts/audit-cloudflare.sh",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@siteline/core": "^1.0.9",
-    "dotenv": "^8.2.0",
+    "@siteline/core": "^1.1.0",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {

@@ -1,0 +1,30 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "siteline-cloudflare-mcp-worker",
+	"main": "src/mcp-index.ts",
+	"compatibility_date": "2025-12-05",
+	"workers_dev": false,
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 0.01,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 0.01,
+			"persist": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": true,
+			"persist": true,
+			"head_sampling_rate": 0.01
+		}
+	},
+	"dev": {
+		"host": "siteline.ai"
+	},
+	"vars": {
+		"SITELINE_API_URL": "https://api.siteline.ai/v1/intake/pageview",
+		"SITELINE_MCP_CAPTURE_ARG_KEYS": "true",
+		"SITELINE_MCP_TRANSPORT": "streamable-http"
+	}
+}
