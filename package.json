@@ -13,8 +13,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@siteline/core": "^1.1.0",
-    "node-fetch": "^3.3.2"
+    "@siteline/core": "^1.1.0"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.16.11",
